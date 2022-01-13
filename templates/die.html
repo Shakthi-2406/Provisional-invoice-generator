@@ -1,0 +1,52 @@
+
+{% load crispy_forms_tags %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">  </script>
+</head>
+<body>
+
+    <form method="POST">
+        {% csrf_token %}
+    {{ order_formset.management_form }}
+    <span id="form_set"> 
+        {{ invoice_form|crispy}}
+
+        {% for order_form in order_formset %}
+                <!-- {{ order_form|crispy }} -->
+                <br>
+                {% for field in order_form %}
+                    <span>{{field.label}}: {{field}}</span>
+                {% endfor %}
+        {% endfor %} 
+
+    </span>
+    <input type="button" value="Add more" id="add_more">
+    <br><br>
+
+    <button type="submit">SUBMIT</button>
+
+    <div id="empty_form" style="display: none;">
+        {% comment %} {{ order_formset.empty_form|crispy }} {% endcomment %}
+        <br><br>
+        {% for field in order_formset.empty_form %}
+            <span>{{field.label}}: {{field}}</span>
+        {% endfor %}
+    </div>
+    </form>
+</body>
+</html>
+
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script>
+    $('#add_more').click(function(){
+        var form_idx = $('#id_form-TOTAL_FORMS').val();
+        $('#form_set').append($('#empty_form').html().replace(/__prefix__/g, form_idx));
+        $('#id_form-TOTAL_FORMS').val(parseInt(form_idx)+1);
+    });
+</script>

@@ -1,0 +1,46 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ name }}</title>
+    <style type="text/css">
+        @page {
+            size: {{ pagesize }};
+            margin: 1cm;
+            font-family: sans-serif;
+            font-size: 20px;
+            @frame footer {
+                -pdf-frame-content: footerContent;
+                bottom: 0cm;
+                margin-left: 9cm;
+                margin-right: 9cm;
+                height: 1cm;
+            }
+        }
+    </style>
+</head>
+<body>
+    {{ name }}<br>
+    {{ invoice.s_name }}<br>
+    {{ invoice.s_address }}<br>
+    {{ invoice.s_phone }}<br>
+    {{ invoice.b_name }}<br>
+    {{ invoice.b_address }}<br>
+    {{ invoice.b_phone }}<br>
+    {{ invoice.date|date:"d/m/Y" }}<br>
+    <hr>
+    {% for item in all_items %}
+        {{item.num}} - {{item.name}} - {{item.price}} - {{item.tax}} - {{item.quantity}} - {{item.amount}}
+        <hr>       
+    {% endfor %}
+    {{ invoice.total }}
+    <br>
+    <br>
+    <br>
+    
+    <div id="footerContent">
+            Page <pdf:pagenumber>
+    </div>
+</body>
+</html>
