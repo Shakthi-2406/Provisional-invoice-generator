@@ -10,8 +10,6 @@ from django.forms import BaseFormSet
 
 @receiver(pre_save, sender=Order)
 def order_save_calculate_amount(sender, instance, *args, **kwargs):
-    print(sender)
-    print(instance)
     if instance.amount == None:
         p = instance.price + ((0.01*instance.tax)*instance.price)
         instance.amount = int(p*instance.quantity)

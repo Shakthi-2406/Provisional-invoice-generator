@@ -1,3 +1,4 @@
+from fileinput import filename
 from django.forms.formsets import formset_factory
 from django.shortcuts import redirect, render
 from django.http.response import HttpResponse, HttpResponseRedirect
@@ -9,39 +10,67 @@ from html import escape
 from .models import Invoice,Order
 from django.db.models.signals import post_save, pre_save
 from .forms import InvoiceForm, OrderForm
+import locale
+locale.setlocale(locale.LC_MONETARY,'en_IN')
 
 
 def create_order(request,*args, **kwargs):
-    addx = []
+    if Invoice.objects.all():
+        addx = Invoice.objects.all().last().id
+    else:
+        addx = 0
+    pk_list = []
+    for i in reversed(range(1,addx+1)):
+        pk_list.append(i)
     if request.method == 'POST':
         invoice = InvoiceForm(request.POST)
-        if invoice.is_valid():
-            invoice.save()
-        
+
         OrderFormSet = formset_factory(OrderForm)
         order_formset = OrderFormSet(request.POST)
 
         if order_formset.is_valid() and invoice.is_valid():
+            invoice.save()
             new_orders = []
+            new_order = []
             for order_form in order_formset:
-                new_order = Order(
-                    ordered = invoice.instance,
-                    price = order_form.cleaned_data.get("price"),
-                    name = order_form.cleaned_data.get("name"),
-                    tax = order_form.cleaned_data.get("tax"),
-                    quantity = order_form.cleaned_data.get("quantity"),
-                    amount = int((order_form.cleaned_data.get("price")+((0.01*order_form.cleaned_data.get("tax"))*order_form.cleaned_data.get("price")))*order_form.cleaned_data.get("quantity")),
-                )
-                new_orders.append(new_order)
+                if order_form.cleaned_data.get("delete_it") != True:
+                    new_order = Order(
+                        ordered = invoice.instance,
+                        price = order_form.cleaned_data.get("price"),
+                        render_price = locale.currency(order_form.cleaned_data.get("price"),grouping=True)[2:],
+                        name = order_form.cleaned_data.get("name").capitalize(),
+                        tax = order_form.cleaned_data.get("tax"),
+                        delete_it = order_form.cleaned_data.get("delete_it"),
+                        quantity = order_form.cleaned_data.get("quantity"),
+                        amount = round(float((order_form.cleaned_data.get("price")+((0.01*order_form.cleaned_data.get("tax"))*order_form.cleaned_data.get("price")))*order_form.cleaned_data.get("quantity")),2),
+                    )
+                    new_orders.append(new_order)
             Order.objects.bulk_create(new_orders)
-            print(invoice.instance.id)
+            invoice_form = InvoiceForm()
+            OrderFormSet= formset_factory(OrderForm, extra=1)
+            order_formset = OrderFormSet()
             return redirect('finale', pk=invoice.instance.id )
             # return redirect('admin/')
     if request.method == 'GET':
         invoice_form = InvoiceForm()
         OrderFormSet= formset_factory(OrderForm, extra=1)
         order_formset = OrderFormSet()
-        return render(request, 'die.html', {'invoice_form':invoice_form, 'addx':addx, 'order_formset':order_formset})
+        return render(request, 'die.html', {'invoice_form':invoice_form, 'addx':addx+1,'pk_list':pk_list, 'order_formset':order_formset})
+
+
+
+def invoiceFun(request, pk):
+    invoice = Invoice.objects.get(pk=pk)
+    all_items = invoice.orderline.all()
+    y = ("000"+str(pk))[-4:]
+    name = f"Invoice{y}"
+    download = False
+
+    return convert_to_pdf(request,'check.html', {
+        'name': name,
+        'invoice': invoice,
+        'all_items': all_items
+    }, name, download)
 
 
 
@@ -53,39 +82,43 @@ def final(request, pk):
     for item in all_items:
         x += item.amount
         item.num = numbering
+        item.render_amount = locale.currency(item.amount,grouping=True)[2:]
         item.save()
         numbering += 1
-    invoice.total = x
+
+    invoice.total = round(x,2)
+    invoice.render_total = locale.currency(round(x,2),grouping=True)[2:]
     invoice.save()
-    y = ("00"+str(pk))[-3:]
+    y = ("000"+str(pk))[-4:]
     name = f"Invoice{y}"
-    conktext={
+    download = True
+
+    return convert_to_pdf(request,'check.html', {
         'name': name,
         'invoice': invoice,
-        'all_items': all_items,
-        'pagesize':'A4',
-    }
-    # return render(request, 'xxx.html', conktext)
-    return render_to_pdf('xxx.html', {
-        'name': name,
-        'invoice': invoice,
-        'all_items': all_items,
-        'pagesize':'A4',
-    })
+        'all_items': all_items
+    }, name, download)
 
 
 
-
-
-def render_to_pdf(template_src, context_dict):
+def convert_to_pdf(request,template_src, context_dict, name, download):
     template = get_template(template_src)
     context = context_dict
     html  = template.render(context)
     result = BytesIO()
+    pdf = pisa.pisaDocument(src=BytesIO(html.encode("ISO-8859-1")),dest= result)
+    filename = f'{name}.pdf'
+    converted = result.getvalue() if not pdf.err else ''
+    response = HttpResponse(result.getvalue(),content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename=%s' %filename
 
-    pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+    if download:
+        response['Content-Disposition'] = 'attachment; filename=%s' %filename
+    response.write(converted)
+    # pyautogui.hotkey('f5')
+
     if not pdf.err:
-        return HttpResponse(result.getvalue(), content_type='application/pdf')
+        return response
     return HttpResponse('We had some errors<pre>%s</pre>' % escape(html))
 
 
@@ -94,12 +127,7 @@ def render_to_pdf(template_src, context_dict):
 
 
 
-# @receiver(pre_save, sender=Order)
-# def order_save_calculate_price(sender, instance, raw, using, update_fields, **kwargs):
-#     print(sender)
-#     instance.amount = (instance.price*(1+instance.tax))*instance.quantity
-#     instance.save()
-#     print("Success!!!")
+
 
 
 

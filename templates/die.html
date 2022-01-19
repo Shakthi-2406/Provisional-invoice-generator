@@ -1,42 +1,139 @@
-
 {% load crispy_forms_tags %}
+{% load static %}
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">  </script>
+    <script type="text/javascript">$(function(){
+        $('#form_set').formset();}) </script>
+    <title>INVOICE00{{addx}}</title>
+    <link rel="stylesheet" href="{% static 'style1.css' %}">
+
 </head>
 <body>
-
-    <form method="POST">
+    <div class="g-col" style="background-color: #ff0884;"></div>
+    <div class="g-col" style="background-color: #fffc65;"></div>
+    <div class="g-col" style="background-color: #00e1ff;"> </div>
+    <!-- <br> -->
+    <h3 id="in-title">INVOICE00{{addx}}</h3>
+    <!-- <hr><br> -->
+    <br>
+    <form id="formie" method="POST">
         {% csrf_token %}
     {{ order_formset.management_form }}
-    <span id="form_set"> 
-        {{ invoice_form|crispy}}
+    
+    <div class="details-box">
+        
+        <div class="seller-details">
+            <input type="text" name="s_name" placeholder="Seller Name" maxlength="100" required id="id_s_name">
 
-        {% for order_form in order_formset %}
-                <!-- {{ order_form|crispy }} -->
-                <br>
-                {% for field in order_form %}
-                    <span>{{field.label}}: {{field}}</span>
-                {% endfor %}
-        {% endfor %} 
+            <textarea name="s_address" spellcheck="false" placeholder="Seller Address" cols="30" rows="4" required id="id_s_address"></textarea>
 
-    </span>
-    <input type="button" value="Add more" id="add_more">
-    <br><br>
+            <input type="text" placeholder="Seller Phone Number" name="s_phone" maxlength="13" required id="id_s_phone">
+        </div>
 
-    <button type="submit">SUBMIT</button>
 
-    <div id="empty_form" style="display: none;">
-        {% comment %} {{ order_formset.empty_form|crispy }} {% endcomment %}
-        <br><br>
-        {% for field in order_formset.empty_form %}
-            <span>{{field.label}}: {{field}}</span>
-        {% endfor %}
+        <div class="buyer-details">
+            <input type="text" placeholder="Buyer Name" name="b_name" maxlength="100" required id="id_b_name">
+    
+            <textarea placeholder="Buyer Address" spellcheck="false"name="b_address" cols="30" rows="4" required id="id_b_address"></textarea>
+        
+            <input type="text" placeholder="Buyer Phone Number" name="b_phone" maxlength="15" required id="id_b_phone">
+        </div>
+
     </div>
+    <hr style="color: plum;">
+
+<h3 id="item-tit">ITEMS</h3>
+    <table id="main-table">
+        <thead>
+            <th>Product</th>
+            <th>Price (₹)</th>
+            <th>Tax</th>
+            <th>Quantity</th>
+            <th>Amount</th>
+            <th></th>
+        </thead>
+    <tbody id="form_set"> 
+        <!-- {% for form in order_formset %} -->
+                <br>
+
+            <tr id="{{form.name.auto_id}}-form-div">
+                <td><input type="text" name="form-0-name" maxlength="100" required id="id_form-0-name"></td>
+                    
+                <td><input type="number" name="form-0-price" min="0" step="any" required id="id_form-0-price" onInput="priceChanged(this.id)"></td>
+            
+                <td><input type="number" value="1.8" name="form-0-tax" step="any" id="id_form-0-tax" onInput="taxChanged(this.id)"></td>
+            
+                <td><input type="number" name="form-0-quantity" value="1" min="1" id="id_form-0-quantity" onInput="quantityChanged(this.id)"></td>
+            
+                <input type="hidden" name="form-0-delete_it" value="False" id="id_form-0-delete_it">
+
+                <td><span id="{{form.name.auto_id}}-amt-dis">0</span></td>
+
+                <td><button  type="button" id="{{form.name.auto_id}}-del-btn" onClick="deleteItem(this.id)">x</button></td>
+                    
+                </tr>
+                
+        <!-- {% endfor %}  -->
+
+        </tbody>
+</table>
+
+    <br>
+    <input class="add-more-btn-style" type="button" value="Add" id="add_more">
+    <br><br>
+    <h2 class="total-amt">Total:  ₹ <span id="total-price">0.00</span></h2>
+    <button class="love" type="submit" style="color: white;">Generate Bill</button>
+
+    <div id="invoice-title">VIEW INVOICES</div>
+    <div id="invoice-container">
+        <ul>
+            {% for pk in pk_list %}
+                <li><a href="{% url 'invoice' pk=pk %}" target="blank">Invoice000{{pk}}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+
+
+
+
+
+
+
+
+
+        {% comment %} {{ order_formset.empty_form|crispy }} {% endcomment %}
+    <table style="display: none;">
+        <thead>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Tax</th>
+            <th>Quantity</th>
+            <th>Amount</th>
+            <th>Delete</th>
+        </thead>
+        <tbody id="empty_form" >    
+            <tr class="xxxx">
+            <td><input type="text" name="form-__prefix__-name" maxlength="100" id="id_form-__prefix__-name"></td>
+                
+            <td><input type="number" name="form-__prefix__-price" min="0" step="any" id="id_form-__prefix__-price" onInput="priceChanged(this.id)"></td>
+        
+            <td><input type="number" name="form-__prefix__-tax" value="1.8" step="any" id="id_form-__prefix__-tax" onInput="taxChanged(this.id)"></td>
+        
+            <td><input type="number" name="form-__prefix__-quantity" value="1" min="1" id="id_form-__prefix__-quantity" onInput="quantityChanged(this.id)"></td>
+        
+            <input type="hidden" name="form-__prefix__-delete_it" value="False" id="id_form-__prefix__-delete_it">
+
+            <td><span class="zzzz">0</span><td>
+
+            <button  type="button"  class="yyyy" onClick="deleteItem(this.id)">x</button>
+
+        </tr></tbody><table>
     </form>
 </body>
 </html>
@@ -44,9 +141,93 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 <script>
+
+var totalRow = 1;
+console.log(totalRow)
     $('#add_more').click(function(){
         var form_idx = $('#id_form-TOTAL_FORMS').val();
+        var aff = `id_form-${form_idx}-name-form-div`
+        var affDel = `id_form-${form_idx}-name-del-btn`
+        var affAmtDis = `id_form-${form_idx}-name-amt-dis`
+        totalRow += 1
+        console.log(totalRow)
         $('#form_set').append($('#empty_form').html().replace(/__prefix__/g, form_idx));
+        $('.xxxx')[0].id = aff
+        $('#'+aff).removeClass("xxxx")
+        $('.yyyy')[0].id = affDel
+        $('#'+affDel).removeClass("yyyy")
+        $('.zzzz')[0].id = affAmtDis
+        $('#'+affAmtDis).removeClass("zzzz")
+        $(`#id_form-${form_idx}-name`).attr('required','')
+        $(`#id_form-${form_idx}-price`).attr('required','')
         $('#id_form-TOTAL_FORMS').val(parseInt(form_idx)+1);
     });
+    
+    document.getElementById("formie").addEventListener('submit', function(e){
+        g = 2000
+        if (totalRow>=9){
+            g=4500
+        }
+        document.getElementsByClassName("love").innerText = "LOADING..."
+        setTimeout(()=>{
+            window.location.href = "/"
+            },g)
+
+    } )
+    function deleteItem(id_name){
+        if(totalRow==1){return}
+        console.log(id_name)
+        const commonId = id_name.slice(0,-12) //id_form-0-
+        console.log(commonId) 
+        document.getElementById(`${commonId}delete_it`).value = true
+        document.getElementById(`${commonId}name-form-div`).style.display = "none"
+
+        document.getElementById(`${commonId}name`).removeAttribute("required")
+        document.getElementById(`${commonId}price`).removeAttribute("required")
+
+        document.getElementById(`${commonId}name`).value = "Trash"
+        document.getElementById(`${commonId}price`).value = 240
+
+        totalRow -= 1
+        console.log(totalRow)
+
+        delAmt = parseFloat(document.getElementById(`${commonId}name-amt-dis`).innerText).toFixed(2)
+        console.log(delAmt)
+
+        currentTotal = parseFloat(document.getElementById("total-price").innerText).toFixed(2)
+        document.getElementById("total-price").innerText = parseFloat(parseFloat(currentTotal) - parseFloat(delAmt)).toFixed(2)
+
+    }
+
+
+    function priceChanged(id_name){
+        finalId = id_name.slice(0,-5)
+        updateAmt(finalId)
+    }
+    function taxChanged(id_name){
+        finalId = id_name.slice(0,-3)
+        updateAmt(finalId)
+    }
+    function quantityChanged(id_name){
+        finalId = id_name.slice(0,-8)
+        updateAmt(finalId)
+    }
+    function updateAmt(finalId){
+        pVal = parseFloat(document.getElementById(`${finalId}price`).value)
+        tVal = parseFloat(document.getElementById(`${finalId}tax`).value)
+        console.log(tVal)
+        qVal = parseFloat(document.getElementById(`${finalId}quantity`).value)
+        currentAmt = parseFloat(document.getElementById(`${finalId}name-amt-dis`).innerText).toFixed(2)
+        newAmt = ((pVal + (0.01*tVal*pVal))*qVal).toFixed(2)
+        if (currentAmt == "NaN"){currentAmt = 0}
+        if (newAmt == "NaN"){newAmt = 0}
+
+
+        currentTotal = parseFloat(document.getElementById("total-price").innerText).toFixed(2)
+        finalTotal = parseFloat(parseFloat(currentTotal) + parseFloat(newAmt) - parseFloat(currentAmt)).toFixed(2)
+
+        document.getElementById("total-price").innerText = finalTotal
+        
+        document.getElementById(`${finalId}name-amt-dis`).innerText = newAmt
+    }
 </script>

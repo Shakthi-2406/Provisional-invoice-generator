@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', import_views.create_order, name='die'),
     path('finale/<int:pk>/', import_views.final, name='finale'),
+    path('invoice/<int:pk>/', import_views.invoiceFun, name='invoice'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

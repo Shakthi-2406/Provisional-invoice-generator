@@ -1,0 +1,113 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ name }}</title>
+    <script>
+    </script>
+    <style type="text/css">
+        @page {
+            size: A4;
+            margin: 1cm;
+            font-family: sans-serif;
+            font-size: 20px;
+            @frame footer {
+                -pdf-frame-content: footerContent;
+                bottom: 0cm;
+                margin-left: 9cm;
+                margin-right: 9cm;
+                height: 1cm;
+            }
+        }
+        table{
+            border: 0.3px solid rgb(20, 20, 20);
+        }
+        #diff td{
+            color: rgb(1, 8, 46);
+            font-family: sans-serif;
+            text-transform: uppercase;
+        }
+        </style>
+</head>
+
+<body>
+
+<table style="height: 250px;">
+    <tbody>
+        <tr style="height: 50px;">
+            <td style="font-size: 2em; color: orangered; margin-left: 10px; font-weight: bold;">Invoice Number : {{ name }}</td>
+        </tr>
+        <tr style="height: 35px;">
+            <td style="font-size: 1.7em; margin-left: 10px; margin-top: -30px;">Invoice Date : {{ invoice.date|date:"d/m/Y" }}</td>
+        </tr>
+        <table style="border: none;">
+            <thead style="height: 35px; margin-top: 30px;">
+                <th style="background-color: rgba(173, 173, 173,0.4); font-size: 1.5em;  border-left: 1.5px solid black; border-right: 1px solid black; border-bottom: 1.5px solid black;">Seller Details</th>
+                <th style="background-color: rgba(173, 173, 173,0.4); font-size: 1.5em;  border-left: 1.5px solid black; border-right: 1.5px solid black; border-bottom: 1.5px solid black;">Buyer Details</th>                    
+            </thead>
+            <tbody>
+                <tr style="height: 40px; border-left: 0.5px solid black; border-right: 0.5px solid black;">
+                    <td style="margin-left: 10px; font-size: 1.6em; border-right: 1.5px solid black;">{{invoice.s_name}},</td>
+                    <td style="margin-left: 10px; font-size: 1.6em;">{{invoice.b_name}},</td>
+                </tr>
+                <tr style="height: auto; border-left: 0.5px solid black; border-right: 0.5px solid black;">
+                    <td style="margin-left: 10px; font-size: 1.5em; border-right: 1.5px solid black;">{{invoice.s_address|linebreaks}}</td>
+                    <td style="margin-left: 10px; font-size: 1.5em;">{{invoice.b_address|linebreaks}}</td>
+                </tr>
+                <tr style="height: 35px; border-left: 0.5px solid black; border-right: 0.5px solid black;">
+                    <td style="margin-left: 10px; font-size: 1.5em; border-right: 1.5px solid black;">{{invoice.s_phone}}</td>
+                    <td style="margin-left: 10px; font-size: 1.5em;">{{invoice.b_phone}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <table>
+            <thead style="height: 35px; background-color: rgba(173, 173, 173,0.4);">
+                <th style="font-size: 1.5em; background-color: rgba(173, 173, 173,0.3);">S.no</th>
+                <th style="font-size: 1.5em; background-color: rgba(173, 173, 173,0.3); border-right: 1.5px solid black;">Product</th>
+                <th style="font-size: 1.5em; background-color: rgba(173, 173, 173,0.3);">Price (Rs.)</th>
+                <th style="font-size: 1.5em; background-color: rgba(173, 173, 173,0.3);">Tax (%)</th>
+                <th style="font-size: 1.5em; background-color: rgba(173, 173, 173,0.3);">Quantity</th>
+                <th style="font-size: 1.5em; background-color: rgba(173, 173, 173,0.3);">Amount (Rs.)</th>                    
+            </thead>
+            <tbody id="diff"> 
+                {% for item in all_items %}
+                    <tr style="height: 35px;">
+                        <td style="font-size: 1.49em; width: 10%; text-align: center;">{{ item.num }}.</td>
+                        <td style="font-size: 1.49em; width: 30%; margin-left: 15px; border-right: 1.5px solid black;">{{ item.name }}</td>
+                        {% if item.render_price %}
+                            <td style="font-size: 1.49em; width: 18%; text-align: right; margin-right: 20px;">{{ item.render_price }}</td>
+                        {% else %}
+                            <td style="font-size: 1.49em; width: 18%; text-align: right; margin-right: 20px;">{{ item.price }}</td>
+                        {% endif %}
+                        <td style="font-size: 1.49em; width: 15%; text-align: center;">{{ item.tax }}%</td>
+                        <td style="font-size: 1.49em; width: 15%; text-align: center;">{{ item.quantity }}</td>
+                        {% if item.render_amount %}
+                            <td style="font-size: 1.49em; width: 22%; text-align: right; margin-right: 23px;">{{ item.render_amount }}</td>
+                        {% else %}
+                            <td style="font-size: 1.49em; width: 22%; text-align: right; margin-right: 23px;">{{ item.amount }}</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}   
+            </tbody>
+        </table>
+        <table>
+            <tr style="height: 40px; background-color: rgba(240, 177, 177, 0.4);">
+                <td style="font-size: 1.6em; text-align: center; font-weight: bold;">Grand Total</td>
+                {% if invoice.render_total %}
+                    <td style="font-size: 1.6em; width: 20%; text-align: right;font-weight: bold; margin-right: 23px;">Rs. {{ invoice.render_total}}</td>
+                {% else %}
+                    <td style="font-size: 1.6em; width: 20%; text-align: right;font-weight: bold; margin-right: 23px;">Rs. {{ invoice.total}}</td>
+                {% endif %}
+            </tr>
+        </table>
+    </tbody>
+</table>
+
+<div id="footerContent" style="font-size: 1.3em; font-weight: bold;">
+    Page <pdf:pagenumber>
+</div>
+
+</body>
+
+</html>

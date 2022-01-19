@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     'invoice',
     'crispy_forms',
     'xhtml2pdf',
+    'selenium',
+    'chromedriver_binary',
+    'pyautogui',
 ]
 
 MIDDLEWARE = [

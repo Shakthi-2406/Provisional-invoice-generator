@@ -1,0 +1,361 @@
+body
+{
+    font-family: sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+    padding: 0;
+    background-repeat: repeat-y;
+    /* background: linear-gradient(to bottom, #ffffff, #f5caca); */
+
+}
+body::-webkit-scrollbar{
+    width: 8px;
+    height: 30px;
+    cursor: pointer;
+
+}
+body::-webkit-scrollbar-thumb{
+    background-color: rgb(47, 227, 240);
+    height: 20px;
+    box-shadow: 0 0 10px rgba(3, 3, 3, 0.5),
+    0 0 20px rgba(253, 235, 235, 0.5),
+    0 0 30px rgba(253, 235, 235, 0.5);
+    border-radius: 5px;
+    cursor: pointer;
+}
+#in-title{
+    position: sticky;
+    top: 0;
+    background-color: rgba(253, 235, 235, 0.17);
+    color: rgb(156, 23, 0);
+    height: 1.9em;
+    line-height: 1.9em;
+    z-index: 1;
+}
+.g-col
+{
+    position: fixed;
+    filter: blur(100px);
+    z-index: -4;
+    overflow: hidden;
+    height: 100%;
+}
+.g-col:nth-child(1)
+{
+    width: 700px;
+    height: 600px;
+    top: -300px;
+    right: 200px;
+}
+.g-col:nth-child(2)
+{
+    width: 500px;
+    height: 500px;
+    bottom: -150px;
+    left: 100px;
+}
+.g-col:nth-child(3)
+{
+    width: 300px;
+    height: 300px;
+    bottom: 50px;
+    right: 100px;
+}
+input,textarea{
+    border: none;
+    outline: none;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 8px 20px;
+    border-radius: 35px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05) ;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255,0.2);
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    color: crimson;
+}
+button{
+    cursor: pointer;
+}
+button[type="submit"]
+{
+    background-color: white;
+    color: #666;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+button[type="button"], .add-more-btn-style{
+    border: 1px solid crimson;
+    width: auto;
+    background-color: transparent;
+    border-radius: 35px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05) ;
+    border: 1px solid crimson;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    color: crimson;
+    background-color: crimson;
+    color: white;
+}
+table th{
+    color: rgb(80, 21, 31);
+    text-transform: uppercase;
+}
+.add-more-btn-style{
+    position: relative;
+    color: crimson;
+    background-color: transparent;
+    transform: translateX(-50%);
+    padding: 6px 10px;
+    cursor: pointer;
+    left: 50%;
+}
+textarea{
+    border-radius: 20px;
+    margin: 10px 0;
+    resize: none;
+}
+.details-box{
+    display: flex;
+    width: 100%;
+    margin-bottom: 20px;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.seller-details, .buyer-details{
+    position: relative;
+    flex-basis: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 50%;
+    align-items: center;
+}
+input::placeholder, textarea::placeholder
+{
+    color: white;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+}
+.seller-details input::placeholder,.seller-details textarea::placeholder{
+    color: rgb(59, 59, 59);
+}
+.buyer-details input, .buyer-details textarea{
+    color: white;
+}
+table input{
+    color: crimson;
+}
+table{
+    position: relative;
+    width: 800px;
+    transform: translateX(-50%);
+    left: 50%;
+}
+table td:nth-child(1){
+    position: relative;
+    width: 30%;
+}
+table td:nth-child(3), table td:nth-child(4){
+    position: relative;
+    width: 12%;
+}
+table td:nth-child(2){
+    position: relative;
+    width: 20%;
+    text-align: right;
+    text-decoration: underline;
+}
+table td:nth-child(4) input,table td:nth-child(3) input{
+    text-align: center;
+}
+
+table input{
+    border-radius: 20px;
+}
+table td:nth-child(2) input::-webkit-outer-spin-button,
+table td:nth-child(2) input::-webkit-inner-spin-button,
+table td:nth-child(3) input::-webkit-outer-spin-button,
+table td:nth-child(3) input::-webkit-inner-spin-button{
+    display: none;
+}
+table td:nth-child(6) span{
+    position: relative;
+    width: 70%;
+    right: 25px;
+    transform: translateX(-50%);
+}
+table td:nth-child(6){
+    text-align: right;
+    color: crimson;
+}
+.love
+{
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);  
+    color: black;
+    display: inline;
+    width: auto;
+    padding: 10px 30px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    font-family: sans-serif;
+    text-decoration: none;
+    background: linear-gradient(90deg,#03a9f4,#f441a5,#ffeb3b,#03a9f4);
+    background-size: 400%;
+    z-index: 1;
+}
+.love:hover
+{
+    animation: animate 8s linear infinite;
+}
+.love:hover::before
+{
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    z-index: -1;
+    background: linear-gradient(90deg,#03a9f4,#f441a5,#ffeb3b,#03a9f4);
+    background-size: 400%;
+    border-radius: 50px;
+    filter: blur(20px);
+    animation: animate 8s linear infinite;
+}
+@keyframes animate {
+    0%{
+        background-position: 0%;
+    }
+    100%{
+        background-position: 400%;
+    }
+}
+
+.total-amt{
+    position: relative;
+    top: 76%;
+    left: 21%;
+    color: rgb(136, 5, 108);
+}
+h3{
+    color: rgb(98, 0, 90);
+}
+#invoice-title{
+    position: fixed;
+    bottom: calc(3% + 150px);
+    right: 0;
+    margin-right: 35px;
+    margin-bottom: 3px;
+    font-weight: bold;
+    color: rgb(87, 3, 20);
+}
+#invoice-container{
+    height: 150px;
+    overflow: scroll;
+    overflow-x: hidden;
+    position: absolute;
+    right: 10px;
+    bottom: 3%;
+    padding-right: -30px;
+    padding-left: -30px;
+    border: 1px solid snow;
+    border-radius: 50px 0px ;
+    position: fixed;
+    background-color: rgba(253, 235, 235, 0.17);
+    box-shadow: 0 0 10px rgba(240, 117, 219, 0.5),
+                0 0 20px rgba(253, 235, 235, 0.5),
+                0 0 30px rgba(253, 235, 235, 0.5);
+}
+#invoice-container::-webkit-scrollbar{
+    width: 5px;
+    height: 30px;
+    cursor: pointer;
+
+}
+#invoice-container::-webkit-scrollbar-thumb{
+    background-color: rgb(240, 150, 150);
+    height: 20px;
+    box-shadow: 0 0 10px rgba(3, 3, 3, 0.5),
+    0 0 20px rgba(253, 235, 235, 0.5),
+    0 0 30px rgba(253, 235, 235, 0.5);
+    border-radius: 5px;
+    cursor: pointer;
+}
+#invoice-container ul{
+    list-style: none;
+    text-align: center;
+    margin-right: 15px;
+}
+#invoice-container ul li{
+    margin-bottom: 4px;
+    text-align: center;
+
+    margin-right: 15px;
+}
+#invoice-container ul li a{
+    text-decoration: none;
+    color: rgb(245, 11, 81);
+}
+
+@media only screen and (max-width: 800px) {
+    body{
+        overflow: -moz-hidden-unscrollable;
+    }
+    table{
+        width: 97%;
+    }
+    .details-box{
+        flex-direction: column;
+        align-items: center;
+    }
+    .details-box div{
+        margin-bottom: 20px;
+        width: 80%;
+    }
+    .details-box div input::placeholder, .details-box div textarea::placeholder{
+        color: black;
+    }
+    .details-box div textarea, .details-box div input{
+        color: black;
+    }
+    h3{
+        text-align: center;
+    }
+    form{
+        overflow-x: hidden;
+    }
+    .total-amt{
+        position: unset;
+        text-align: center;
+    }
+    .love{
+        transform: translateX(-50%);
+        left: 50%;
+        text-align: center;
+    }
+    #invoice-title{
+        position: unset;
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        margin-right: 0;
+    }
+    #invoice-container{
+        height: 200px;
+        width: 60%;
+        position: relative;
+        transform: translateX(-50%);
+        left: 50%;
+    }
+    table td:nth-child(6) span{
+        right: 0px;
+    }
+}
