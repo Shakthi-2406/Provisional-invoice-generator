@@ -92,9 +92,11 @@
     <div id="invoice-title">VIEW INVOICES</div>
     <div id="invoice-container">
         <ul>
+            {% if pk_list %}
             {% for pk in pk_list %}
                 <li><a href="{% url 'invoice' pk=pk %}" target="blank">Invoice000{{pk}}</a></li>
             {% endfor %}
+            {% endif %}
         </ul>
     </div>
 
