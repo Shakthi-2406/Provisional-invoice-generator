@@ -12,12 +12,12 @@ $ cd sample
 Then install the dependencies:
 
 ```sh
-(env)$ pip install -r requirements.txt
+$ pip install -r requirements.txt
 ```
 
 
 Once `pip` has finished downloading the dependencies:
 ```sh
-(env)$ cd sample
-(env)$ python manage.py runserver
+$ cd sample
+$ python manage.py runserver
 ```
